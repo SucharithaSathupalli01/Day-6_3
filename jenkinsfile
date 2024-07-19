@@ -1,0 +1,24 @@
+pipeline {
+    agent any
+    environment {
+        DOCKER_USER = 'sucharithasathupalli01'
+        DOCKER_PASS = 'qwertyuiop1234567890'
+    }
+    stages {
+        stage ('git') {
+            steps{
+                git 'https://github.com/SucharithaSathupalli01/Day-6_3.git'
+            }
+        }
+        stage('Docker') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', usernameVariable: '}${DOCKER_USER}', passwordVariable: '${DOCKER_PASS}')]) {
+                    script {
+                        bat 'docker build -t iday63 .'
+                        bat 'docker run -t -d --name day63 -p 8603:80 iday63'
+                    }
+                }
+            }
+        }
+    }
+}
